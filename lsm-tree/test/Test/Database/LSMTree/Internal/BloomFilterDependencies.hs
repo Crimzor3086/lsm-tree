@@ -76,6 +76,7 @@ tests = testGroup "Data.BloomFilter dependency coverage"
         [ testCase "new 0 bits is clamped to 1" case_mutableNewZeroBits
         , testCase "new huge size guard is evaluated" case_mutableNewHugeGuard
         , testCase "elem/length work on mutable bloom" case_mutableElemLength
+        , testCase "elemHashes works on mutable bloom" case_mutableElemHashes
         ]
     , testGroup "Data.BloomFilter.Mutable.Internal"
         [ testCase "Show for mutable bloom" case_showMutableBloom
@@ -303,6 +304,21 @@ case_mutableElemLength = do
           absent <- Mutable.elem 11 mb
           pure (present, absent, Mutable.length mb)
     result @?= (True, False, 257)
+
+case_mutableElemHashes :: Assertion
+case_mutableElemHashes = do
+    let result = runST $ do
+          mbPresent <- Mutable.new 4 257 :: ST s (Mutable.MBloom s Word64)
+          Mutable.insert mbPresent 10
+          let presentHashes = Hash.makeCheapHashes (10 :: Word64)
+          present <- Mutable.elemHashes presentHashes mbPresent
+
+          mbEmpty <- Mutable.new 4 257 :: ST s (Mutable.MBloom s Word64)
+          let absentHashes = Hash.makeCheapHashes (11 :: Word64)
+          absent <- Mutable.elemHashes absentHashes mbEmpty
+
+          pure (present, absent)
+    result @?= (True, False)
 
 case_showMutableBloom :: Assertion
 case_showMutableBloom = do
