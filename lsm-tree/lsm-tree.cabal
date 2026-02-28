@@ -708,6 +708,7 @@ test-suite lsm-tree-test
     Test.Database.LSMTree.Internal.Arena
     Test.Database.LSMTree.Internal.BlobFile.FS
     Test.Database.LSMTree.Internal.BloomFilter
+    Test.Database.LSMTree.Internal.BloomFilterDependencies
     Test.Database.LSMTree.Internal.Chunk
     Test.Database.LSMTree.Internal.CRC32C
     Test.Database.LSMTree.Internal.Entry
@@ -772,6 +773,7 @@ test-suite lsm-tree-test
     , contra-tracer
     , crc32c
     , cryptohash-sha256
+    , data-array-byte
     , deepseq
     , directory
     , filepath
